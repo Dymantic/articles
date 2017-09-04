@@ -1,0 +1,17 @@
+{
+    "name": "michaeljoyner/articles",
+    "description": "Laravel article model and associated stuff for reuse in our projects",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Joyner",
+            "email": "joyner.michael@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "orchestra/testbench": "^3.5"
+    }
+}
