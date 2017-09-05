@@ -9,9 +9,21 @@
             "email": "joyner.michael@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "spatie/laravel-medialibrary": "^6.0"
+    },
     "require-dev": {
         "phpunit/phpunit": "^6.0",
         "orchestra/testbench": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dymantic\\Articles\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dymantic\\Articles\\Test\\": "tests/"
+        }
     }
 }
