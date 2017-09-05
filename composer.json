@@ -1,5 +1,5 @@
 {
-    "name": "michaeljoyner/articles",
+    "name": "dymanitc/articles",
     "description": "Laravel article model and associated stuff for reuse in our projects",
     "type": "library",
     "license": "MIT",
