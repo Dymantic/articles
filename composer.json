@@ -1,5 +1,5 @@
 {
-    "name": "dymanitc/articles",
+    "name": "dymantic/articles",
     "description": "Laravel article model and associated stuff for reuse in our projects",
     "type": "library",
     "license": "MIT",
