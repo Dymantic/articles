@@ -26,4 +26,9 @@ trait MakesModels
 
         return TestUserModel::forceCreate(array_merge($defaults, $attributes))->fresh();
     }
+
+    public function createUnnamedAuthor()
+    {
+        return NamelessAuthor::forceCreate([]);
+    }
 }

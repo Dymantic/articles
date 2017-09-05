@@ -9,6 +9,17 @@ use Illuminate\Support\Carbon;
 
 trait Publishable
 {
+
+    public function scopePublished($query)
+    {
+        return $query->where('is_draft', false)->whereDate('published_on', '<=', Carbon::today());
+    }
+
+    public function scopeDrafts($query)
+    {
+        return $query->where('is_draft', true);
+    }
+
     public function publish($date = null)
     {
         Carbon::parse($date)->isToday() ? $this->publishNow() : $this->publishOn($date);

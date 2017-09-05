@@ -4,6 +4,7 @@
 namespace Dymantic\Articles\Test;
 
 
+use Carbon\Carbon;
 use Dymantic\Articles\Article;
 
 class ArticlesTest extends TestCase
@@ -58,7 +59,7 @@ class ArticlesTest extends TestCase
     }
 
     /**
-     *@test
+     * @test
      */
     public function the_body_of_an_article_can_be_set()
     {
@@ -67,5 +68,35 @@ class ArticlesTest extends TestCase
         $article->setBody('A new and updated body');
 
         $this->assertEquals('A new and updated body', $article->fresh()->body);
+    }
+
+    /**
+     * @test
+     */
+    public function an_article_may_be_presented_as_a_jsonable_array()
+    {
+        $user = $this->createTestUser(['name' => 'TEST USER']);
+        $article = $user->postArticle([
+            'title'       => 'TEST TITLE',
+            'description' => 'TEST DESCRIPTION',
+            'intro'       => 'TEST INTRO',
+            'body'        => 'TEST BODY'
+        ]);
+        $article->publish();
+
+        $expected = [
+            'id'           => $article->id,
+            'title'        => 'TEST TITLE',
+            'description'  => 'TEST DESCRIPTION',
+            'intro'        => 'TEST INTRO',
+            'body'         => 'TEST BODY',
+            'is_draft'     => false,
+            'published_on' => Carbon::today()->format('Y-m-d'),
+            'has_author'   => true,
+            'author_id'    => $article->author->id,
+            'author_name'  => 'TEST USER'
+        ];
+
+        $this->assertEquals($expected, $article->toJsonableArray());
     }
 }

@@ -15,4 +15,9 @@ trait AuthorsArticles
     {
         return $this->articles()->create($article_attributes);
     }
+
+    public function getAuthorName()
+    {
+        return $this->name ?? 'Anonymous';
+    }
 }

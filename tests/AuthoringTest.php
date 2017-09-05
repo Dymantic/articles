@@ -40,4 +40,38 @@ class AuthoringTest extends TestCase
 
         $this->assertTrue($article->author->is($user));
     }
+
+    /**
+     *@test
+     */
+    public function an_article_can_always_get_its_authors_name()
+    {
+        $user = $this->createTestUser(['name' => 'TEST AUTHOR']);
+
+        $article_attributes = [
+            'title' => 'THE USERS TITLE',
+            'description' => 'AN ARTICLE BY A USER'
+        ];
+
+        $article = $user->postArticle($article_attributes);
+
+        $this->assertEquals('TEST AUTHOR', $article->author->getAuthorName());
+    }
+
+    /**
+     *@test
+     */
+    public function the_author_can_get_a_default_name_if_it_is_unnamed()
+    {
+        $author = $this->createUnnamedAuthor();
+
+        $article_attributes = [
+            'title' => 'THE USERS TITLE',
+            'description' => 'AN ARTICLE BY A USER'
+        ];
+
+        $article = $author->postArticle($article_attributes);
+
+        $this->assertEquals('Anonymous', $article->author->getAuthorName());
+    }
 }

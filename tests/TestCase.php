@@ -115,6 +115,10 @@ abstract class TestCase extends Orchestra
             $table->string('name');
         });
 
+        $app['db']->connection()->getSchemaBuilder()->create('nameless_authors', function (Blueprint $table) {
+            $table->increments('id');
+        });
+
         $app['db']->connection()->getSchemaBuilder()->create('media', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('model');

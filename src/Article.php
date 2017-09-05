@@ -4,13 +4,9 @@
 namespace Dymantic\Articles;
 
 
-use Carbon\Carbon;
-use Dymantic\Articles\Events\ArticleFirstPublished;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
-use Spatie\MediaLibrary\Media;
 
 class Article extends Model implements HasMediaConversions
 {
@@ -56,6 +52,22 @@ class Article extends Model implements HasMediaConversions
     public function getTitleImage()
     {
         return $this->getMedia(static::TITLE_IMAGE_COLLECTION)->first();
+    }
+
+    public function toJsonableArray()
+    {
+        return [
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'description'  => $this->description,
+            'intro'        => $this->intro,
+            'body'         => $this->body,
+            'is_draft'     => $this->is_draft,
+            'published_on' => $this->published_on ? $this->published_on->format('Y-m-d') : null,
+            'has_author'   => !! $this->author,
+            'author_id'    => $this->author->id,
+            'author_name'  => $this->author->name
+        ];
     }
 
 }
