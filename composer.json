@@ -29,5 +29,14 @@
         "psr-4": {
             "Dymantic\\Articles\\Test\\": "tests/"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dymantic\\Articles\\ArticlesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
