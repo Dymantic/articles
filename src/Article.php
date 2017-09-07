@@ -5,15 +5,17 @@ namespace Dymantic\Articles;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 class Article extends Model implements HasMediaConversions
 {
     use HasMediaTrait, ConvertsImages, Publishable;
-    
+
     const ARTICLE_IMAGES_COLLECTION = 'article_images';
     const TITLE_IMAGE_COLLECTION = 'title_images';
+    const DEFAULT_TITLE_IMG = '/images/defaults/article.jpg';
 
     protected $table = 'articles';
 
@@ -46,7 +48,13 @@ class Article extends Model implements HasMediaConversions
     public function setTitleImage($file)
     {
         $this->clearMediaCollection(static::TITLE_IMAGE_COLLECTION);
+
         return $this->addMedia($file)->toMediaCollection(static::TITLE_IMAGE_COLLECTION);
+    }
+
+    public function titleImage($conversion = '')
+    {
+        return $this->hasTitleImage() ? $this->getTitleImage()->getUrl($conversion) : static::DEFAULT_TITLE_IMG;
     }
 
     public function getTitleImage()
@@ -54,19 +62,33 @@ class Article extends Model implements HasMediaConversions
         return $this->getMedia(static::TITLE_IMAGE_COLLECTION)->first();
     }
 
+    public function hasTitleImage()
+    {
+        return $this->hasMedia(static::TITLE_IMAGE_COLLECTION);
+    }
+
+    public function isLive()
+    {
+        return !$this->is_draft && $this->published_on->lte(Carbon::today());
+    }
+
     public function toJsonableArray()
     {
         return [
-            'id'           => $this->id,
-            'title'        => $this->title,
-            'description'  => $this->description,
-            'intro'        => $this->intro,
-            'body'         => $this->body,
-            'is_draft'     => $this->is_draft,
-            'published_on' => $this->published_on ? $this->published_on->format('Y-m-d') : null,
-            'has_author'   => !! $this->author,
-            'author_id'    => $this->author->id,
-            'author_name'  => $this->author->name
+            'id'                     => $this->id,
+            'title'                  => $this->title,
+            'description'            => $this->description,
+            'intro'                  => $this->intro,
+            'body'                   => $this->body,
+            'is_draft'               => $this->is_draft,
+            'published_on'           => $this->published_on ? $this->published_on->format('Y-m-d') : null,
+            'has_author'             => !!$this->author,
+            'author_id'              => $this->author->id,
+            'author_name'            => $this->author->name,
+            'title_image'            => $this->titleImage(),
+            'title_image_thumb'      => $this->titleImage('thumb'),
+            'title_image_large_tile' => $this->titleImage('large_tile'),
+            'title_image_banner'     => $this->titleImage('banner'),
         ];
     }
 

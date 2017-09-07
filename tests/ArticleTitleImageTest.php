@@ -80,4 +80,40 @@ class ArticleTitleImageTest extends TestCase
 
         $this->assertNotEquals($image->getPath(), $image->getPath('banner'));
     }
+
+    /**
+     *@test
+     */
+    public function an_article_knows_if_it_has_no_title_image()
+    {
+        $article = $this->createArticle();
+        $this->assertCount(0, $article->getMedia(Article::TITLE_IMAGE_COLLECTION));
+
+        $this->assertFalse($article->hasTitleImage());
+    }
+
+    /**
+     *@test
+     */
+    public function a_title_image_src_can_be_fetched_for_a_given_conversion()
+    {
+        $article = $this->createArticle();
+        $image = $article->setTitleImage(UploadedFile::fake()->image('testpic.jpg'));
+
+        $this->assertEquals($image->getUrl('thumb'), $article->titleImage('thumb'));
+        $this->assertEquals($image->getUrl('large_tile'), $article->titleImage('large_tile'));
+        $this->assertEquals($image->getUrl('banner'), $article->titleImage('banner'));
+        $this->assertEquals($image->getUrl(), $article->titleImage());
+    }
+
+    /**
+     *@test
+     */
+    public function an_article_without_a_title_image_has_a_default_placeholder()
+    {
+        $article = $this->createArticle();
+        $this->assertCount(0, $article->getMedia(Article::TITLE_IMAGE_COLLECTION));
+
+        $this->assertEquals(Article::DEFAULT_TITLE_IMG, $article->titleImage());
+    }
 }
