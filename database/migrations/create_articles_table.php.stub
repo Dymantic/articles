@@ -16,6 +16,7 @@ class CreateArticlesTable extends Migration
             $table->unsignedInteger('author_id')->nullable();
             $table->string('author_type')->nullable();
             $table->string('title');
+            $table->string('slug')->nullable();
             $table->text('description')->nullable();
             $table->string('intro')->nullable();
             $table->text('body')->nullable();

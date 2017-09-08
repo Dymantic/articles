@@ -2,6 +2,7 @@
 
 namespace Dymantic\Articles\Test;
 
+use Cviebrock\EloquentSluggable\ServiceProvider;
 use Dymantic\Articles\ArticlesServiceProvider;
 use File;
 use Illuminate\Database\Schema\Blueprint;
@@ -26,8 +27,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            ArticlesServiceProvider::class,
-            MediaLibraryServiceProvider::class
+            ArticlesServiceProvider::class
         ];
     }
 

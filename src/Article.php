@@ -4,6 +4,7 @@
 namespace Dymantic\Articles;
 
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -11,7 +12,7 @@ use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 class Article extends Model implements HasMediaConversions
 {
-    use HasMediaTrait, ConvertsImages, Publishable;
+    use HasMediaTrait, ConvertsImages, Publishable, Sluggable;
 
     const ARTICLE_IMAGES_COLLECTION = 'article_images';
     const TITLE_IMAGE_COLLECTION = 'title_images';
@@ -92,4 +93,11 @@ class Article extends Model implements HasMediaConversions
         ];
     }
 
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' => ['source' => 'title']
+        ];
+    }
 }

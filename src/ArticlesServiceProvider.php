@@ -4,7 +4,9 @@
 namespace Dymantic\Articles;
 
 
+use Cviebrock\EloquentSluggable\ServiceProvider as SluggableServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
 class ArticlesServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,7 @@ class ArticlesServiceProvider extends ServiceProvider
 
     public function register()
     {
-
+        $this->app->register(MediaLibraryServiceProvider::class);
+        $this->app->register(SluggableServiceProvider::class);
     }
 }
