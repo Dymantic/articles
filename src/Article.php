@@ -78,6 +78,7 @@ class Article extends Model implements HasMediaConversions
         return [
             'id'                     => $this->id,
             'title'                  => $this->title,
+            'slug'                   => $this->slug,
             'description'            => $this->description,
             'intro'                  => $this->intro,
             'body'                   => $this->body,

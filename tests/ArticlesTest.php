@@ -123,6 +123,7 @@ class ArticlesTest extends TestCase
         $expected = [
             'id'                     => $article->id,
             'title'                  => 'TEST TITLE',
+            'slug'                   => 'test-title',
             'description'            => 'TEST DESCRIPTION',
             'intro'                  => 'TEST INTRO',
             'body'                   => 'TEST BODY',
