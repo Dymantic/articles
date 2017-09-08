@@ -30,16 +30,26 @@ class PublishingTest extends TestCase
     /**
      *@test
      */
-    public function publishing_an_article_with_an_existing_published_on_date_does_not_change_the_published_on_date()
+    public function republishing_an_article_updates_the_published_on_date()
     {
-        $article = $this->createArticle(['published_on' => Carbon::parse('-7 days')]);
-        $this->assertTrue($article->is_draft);
-        $this->assertNotNull($article->published_on);
-        $original_publish_date = $article->published_on;
+        $article = $this->createArticle(['published_on' => Carbon::parse('+10 days'), 'is_draft' => true]);
 
         $article->publish();
 
-        $this->assertEquals($original_publish_date, $article->fresh()->published_on);
+        $this->assertTrue(Carbon::today()->isSameDay($article->fresh()->published_on));
+        $this->assertFalse($article->fresh()->is_draft);
+    }
+
+    /**
+     *@test
+     */
+    public function republishing_an_article_with_a_date_less_han_current_published_on_date_still_updates_date()
+    {
+        $article = $this->createArticle(['published_on' => Carbon::parse('+10 days'), 'is_draft' => true]);
+
+        $article->publish(Carbon::parse('+2 days')->format('Y-m-d'));
+
+        $this->assertTrue(Carbon::parse('+2 days')->isSameDay($article->fresh()->published_on));
         $this->assertFalse($article->fresh()->is_draft);
     }
 
@@ -114,4 +124,6 @@ class PublishingTest extends TestCase
 
         Event::assertNotDispatched(ArticleFirstPublished::class);
     }
+
+
 }

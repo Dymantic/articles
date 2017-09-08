@@ -37,8 +37,8 @@ trait Publishable
     {
         if($this->hasNeverBeenPublished()) {
             event(new ArticleFirstPublished($this));
-            $this->published_on = Carbon::now();
         }
+        $this->published_on = Carbon::now();
         $this->is_draft = false;
     }
 
