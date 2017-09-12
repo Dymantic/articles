@@ -70,7 +70,20 @@ class Article extends Model implements HasMediaConversions
 
     public function isLive()
     {
-        return !$this->is_draft && $this->published_on->lte(Carbon::today());
+        return !$this->is_draft && $this->published_on->startOfDay()->lte(Carbon::today());
+    }
+
+    public function publishedStatus()
+    {
+        if ($this->is_draft) {
+            return 'Draft';
+        }
+
+        if ($this->isLive()) {
+            return 'Published on ' . $this->published_on->toFormattedDateString();
+        }
+
+        return 'Will be published on ' . $this->published_on->toFormattedDateString();
     }
 
     public function toJsonableArray()
@@ -84,6 +97,7 @@ class Article extends Model implements HasMediaConversions
             'body'                   => $this->body,
             'is_draft'               => $this->is_draft,
             'published_on'           => $this->published_on ? $this->published_on->format('Y-m-d') : null,
+            'published_status'       => $this->publishedStatus(),
             'has_author'             => !!$this->author,
             'author_id'              => $this->author->id,
             'author_name'            => $this->author->name,
@@ -91,6 +105,8 @@ class Article extends Model implements HasMediaConversions
             'title_image_thumb'      => $this->titleImage('thumb'),
             'title_image_large_tile' => $this->titleImage('large_tile'),
             'title_image_banner'     => $this->titleImage('banner'),
+            'created_at'             => $this->created_at->format('Y-m-d'),
+            'updated_at'             => $this->updated_at->format('Y-m-d')
         ];
     }
 

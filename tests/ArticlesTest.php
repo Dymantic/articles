@@ -129,15 +129,52 @@ class ArticlesTest extends TestCase
             'body'                   => 'TEST BODY',
             'is_draft'               => false,
             'published_on'           => Carbon::today()->format('Y-m-d'),
+            'published_status'       => 'Published on ' . Carbon::today()->toFormattedDateString(),
             'has_author'             => true,
             'author_id'              => $article->author->id,
             'author_name'            => 'TEST USER',
             'title_image_banner'     => $image->getUrl('banner'),
             'title_image_thumb'      => $image->getUrl('thumb'),
             'title_image_large_tile' => $image->getUrl('large_tile'),
-            'title_image'            => $image->getUrl()
+            'title_image'            => $image->getUrl(),
+            'created_at'             => Carbon::today()->format('Y-m-d'),
+            'updated_at'             => Carbon::today()->format('Y-m-d')
         ];
 
         $this->assertEquals($expected, $article->toJsonableArray());
+    }
+
+    /**
+     * @test
+     */
+    public function a_draft_article_has_a_published_state_of_draft()
+    {
+        $article = $this->createArticle(['is_draft' => true, 'published_on' => null]);
+
+        $this->assertEquals('Draft', $article->publishedStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function a_published_articles_with_a_past_published_on_date_has_a_published_state()
+    {
+        $article = $this->createArticle(['is_draft' => false, 'published_on' => Carbon::parse('-3 days')]);
+
+        $expected = 'Published on ' . Carbon::parse('-3 days')->toFormattedDateString();
+
+        $this->assertEquals($expected, $article->publishedStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function a_published_article_with_a_future__published_on_date_has_published_state()
+    {
+        $article = $this->createArticle(['is_draft' => false, 'published_on' => Carbon::parse('+3 days')]);
+
+        $expected = 'Will be published on ' . Carbon::parse('+3 days')->toFormattedDateString();
+
+        $this->assertEquals($expected, $article->publishedStatus());
     }
 }
