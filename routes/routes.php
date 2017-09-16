@@ -1,13 +1,13 @@
 <?php
 
 Route::group(['prefix' => 'admin/services', 'namespace' => '\Dymantic\Articles\Controllers\Services'], function() {
-    Route::group(['middleware' => 'auth'], function() {
+    Route::group(['middleware' => ['web', 'auth']], function() {
         Route::get('articles', 'ArticlesListServiceController@index');
     });
 });
 
 Route::group(['prefix' => 'admin', 'namespace' => '\Dymantic\Articles\Controllers'], function() {
-    Route::group(['middleware' => 'auth'], function() {
+    Route::group(['middleware' => ['web', 'auth']], function() {
 
         Route::get('articles', 'ArticlesController@index');
         Route::get('articles/{article}', 'ArticlesController@show');
