@@ -22,7 +22,7 @@ trait MakesModels
 
     public function createTestUser($attributes = []) : TestUserModel
     {
-        $defaults = ['name' => 'TEST USER'];
+        $defaults = ['name' => 'TEST USER', 'email' => 'test@example.com', 'password' => 'password'];
 
         return TestUserModel::forceCreate(array_merge($defaults, $attributes))->fresh();
     }

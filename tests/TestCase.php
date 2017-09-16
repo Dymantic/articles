@@ -5,7 +5,9 @@ namespace Dymantic\Articles\Test;
 use Cviebrock\EloquentSluggable\ServiceProvider;
 use Dymantic\Articles\ArticlesServiceProvider;
 use File;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Exceptions\Handler;
 use Orchestra\Testbench\TestCase as Orchestra;
 use \Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
@@ -17,6 +19,30 @@ abstract class TestCase extends Orchestra
         parent::setUp();
 
         $this->setUpDatabase($this->app);
+    }
+
+    public function asLoggedInUser()
+    {
+        $this->actingAs(TestUserModel::first());
+
+        return $this;
+    }
+
+    protected function disableExceptionHandling()
+    {
+        $this->app->instance(ExceptionHandler::class, new class extends Handler {
+            public function __construct() {}
+
+            public function report(\Exception $e)
+            {
+                // no-op
+            }
+
+            public function render($request, \Exception $e) {
+                throw $e;
+            }
+
+        });
     }
 
     /**
@@ -113,6 +139,8 @@ abstract class TestCase extends Orchestra
         $app['db']->connection()->getSchemaBuilder()->create('test_users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('email');
+            $table->string('password');
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('nameless_authors', function (Blueprint $table) {
@@ -134,7 +162,7 @@ abstract class TestCase extends Orchestra
             $table->nullableTimestamps();
         });
 
-        TestUserModel::create(['name' => 'test user']);
+        TestUserModel::create(['name' => 'test user', 'email' => 'test@example.com', 'password' => 'password']);
 
         include_once __DIR__ . '/../database/migrations/create_articles_table.php.stub';
 

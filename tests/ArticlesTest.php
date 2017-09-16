@@ -145,6 +145,44 @@ class ArticlesTest extends TestCase
     }
 
     /**
+     *@test
+     */
+    public function an_article_without_an_author_can_still_be_converted_to_a_jsonable_array()
+    {
+        $article = $this->createArticle([
+            'title'       => 'TEST TITLE',
+            'description' => 'TEST DESCRIPTION',
+            'intro'       => 'TEST INTRO',
+            'body'        => 'TEST BODY'
+        ]);
+        $article->publish();
+        $image = $article->setTitleImage(UploadedFile::fake()->image('testpic.jpg'));
+
+        $expected = [
+            'id'                     => $article->id,
+            'title'                  => 'TEST TITLE',
+            'slug'                   => 'test-title',
+            'description'            => 'TEST DESCRIPTION',
+            'intro'                  => 'TEST INTRO',
+            'body'                   => 'TEST BODY',
+            'is_draft'               => false,
+            'published_on'           => Carbon::today()->format('Y-m-d'),
+            'published_status'       => 'Published on ' . Carbon::today()->toFormattedDateString(),
+            'has_author'             => false,
+            'author_id'              => null,
+            'author_name'            => null,
+            'title_image_banner'     => $image->getUrl('banner'),
+            'title_image_thumb'      => $image->getUrl('thumb'),
+            'title_image_large_tile' => $image->getUrl('large_tile'),
+            'title_image'            => $image->getUrl(),
+            'created_at'             => Carbon::today()->format('Y-m-d'),
+            'updated_at'             => Carbon::today()->format('Y-m-d')
+        ];
+
+        $this->assertEquals($expected, $article->toJsonableArray());
+    }
+
+    /**
      * @test
      */
     public function a_draft_article_has_a_published_state_of_draft()

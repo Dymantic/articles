@@ -4,8 +4,9 @@ namespace Dymantic\Articles\Test;
 
 use Dymantic\Articles\AuthorsArticles;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
-class TestUserModel extends Model
+class TestUserModel extends User
 {
     use AuthorsArticles;
 

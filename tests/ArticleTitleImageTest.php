@@ -116,4 +116,18 @@ class ArticleTitleImageTest extends TestCase
 
         $this->assertEquals(Article::DEFAULT_TITLE_IMG, $article->titleImage());
     }
+
+    /**
+     *@test
+     */
+    public function an_article_can_clear_its_title_image()
+    {
+        $article = $this->createArticle();
+        $article->setTitleImage(UploadedFile::fake()->image('testpic.jpg'));
+        $this->assertTrue($article->hasTitleImage());
+
+        $article->clearTitleImage();
+
+        $this->assertFalse($article->fresh()->hasTitleImage());
+    }
 }

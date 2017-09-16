@@ -53,6 +53,11 @@ class Article extends Model implements HasMediaConversions
         return $this->addMedia($file)->toMediaCollection(static::TITLE_IMAGE_COLLECTION);
     }
 
+    public function clearTitleImage()
+    {
+        $this->clearMediaCollection(static::TITLE_IMAGE_COLLECTION);
+    }
+
     public function titleImage($conversion = '')
     {
         return $this->hasTitleImage() ? $this->getTitleImage()->getUrl($conversion) : static::DEFAULT_TITLE_IMG;
@@ -99,8 +104,8 @@ class Article extends Model implements HasMediaConversions
             'published_on'           => $this->published_on ? $this->published_on->format('Y-m-d') : null,
             'published_status'       => $this->publishedStatus(),
             'has_author'             => !!$this->author,
-            'author_id'              => $this->author->id,
-            'author_name'            => $this->author->name,
+            'author_id'              => $this->author->id ?? null,
+            'author_name'            => $this->author->name ?? null,
             'title_image'            => $this->titleImage(),
             'title_image_thumb'      => $this->titleImage('thumb'),
             'title_image_large_tile' => $this->titleImage('large_tile'),
