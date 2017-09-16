@@ -14,6 +14,13 @@ class ArticlesBodyController extends Controller
 {
     use ValidatesRequests, DispatchesJobs, AuthorizesRequests;
 
+    public function show($article)
+    {
+        $article = Article::findOrFail($article);
+
+        return view('admin.articles.body.show', ['article' => $article]);
+    }
+
     public function update($article)
     {
         $article = Article::findOrFail($article);
