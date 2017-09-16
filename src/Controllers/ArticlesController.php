@@ -12,6 +12,18 @@ class ArticlesController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests, DispatchesJobs;
 
+    public function index()
+    {
+        return view('admin.articles.index', [
+            'articles' => Article::latest()->take(15)->get()->map->toJsonableArray()
+        ]);
+    }
+
+    public function show(Article $article)
+    {
+        return view('admin.articles.show', ['article' => $article->toJsonableArray()]);
+    }
+
     public function store()
     {
         request()->validate(['title' => 'required']);
