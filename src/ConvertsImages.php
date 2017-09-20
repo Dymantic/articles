@@ -23,7 +23,7 @@ trait ConvertsImages
             ->optimize();
 
         $this->addMediaConversion('large_tile')
-            ->fit(Manipulations::FIT_CROP, 800, 600)
+            ->fit(Manipulations::FIT_CROP, 800, 400)
             ->keepOriginalImageFormat()
             ->performOnCollections(static::TITLE_IMAGE_COLLECTION)
             ->optimize();
