@@ -20,6 +20,10 @@ class ArticleImagesController extends Controller
 
         $image = Article::findOrFail($article)->addImage(request('image'));
 
-        return ['location' => $image->getUrl('web')];
+        return [
+            'location' => $image->getUrl('web'),
+            'url' => $image->getUrl(),
+            'href' => $image->getUrl('web')
+        ];
     }
 }

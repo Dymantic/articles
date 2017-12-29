@@ -29,6 +29,8 @@ class ArticleImagesTest extends TestCase
         $this->assertTrue($article->fresh()->hasMedia(Article::ARTICLE_IMAGES_COLLECTION));
 
         $this->assertArrayHasKey('location', $response->decodeResponseJson());
+        $this->assertArrayHasKey('url', $response->decodeResponseJson());
+        $this->assertArrayHasKey('href', $response->decodeResponseJson());
 
         $this->assertTrue(file_exists(__DIR__ . '/../temp' .$response->decodeResponseJson()['location']));
     }
