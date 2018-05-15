@@ -28,7 +28,9 @@ class ArticlesController extends Controller
     {
         request()->validate(['title' => 'required']);
 
-        request()->user()->postArticle(request()->all());
+        $article = request()->user()->postArticle(request()->all())->fresh();
+
+        return $article->toJsonableArray();
 
     }
 

@@ -4,6 +4,7 @@
 namespace Dymantic\Articles\Test\Feature;
 
 
+use Dymantic\Articles\Article;
 use Dymantic\Articles\Test\TestCase;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,5 +64,24 @@ class CreateArticlesTest extends TestCase
         $this->assertArrayHasKey('title', $response->decodeResponseJson()['errors']);
 
         $this->assertDatabaseMissing('articles', $article_data);
+    }
+
+    /**
+     *@test
+     */
+    public function creating_a_new_article_responds_with_the_fresh_data()
+    {
+        $this->disableExceptionHandling();
+        $article_data = [
+            'title' => 'TEST TITLE',
+            'description' => 'TEST DESCRIPTION',
+            'intro' => 'TEST INTRO',
+        ];
+
+        $response = $this->asLoggedInUser()->json('POST', '/admin/articles', $article_data);
+        $response->assertStatus(200);
+
+        $this->assertCount(1, Article::all());
+        $this->assertEquals(Article::first()->toJsonableArray(), $response->decodeResponseJson());
     }
 }
