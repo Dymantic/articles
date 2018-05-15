@@ -31,6 +31,22 @@ class UploadTitleImagesTest extends TestCase
     /**
      *@test
      */
+    public function the_reponse_includes_the_saved_image_url()
+    {
+        $this->disableExceptionHandling();
+        $article = $this->createArticle();
+
+        $response = $this->asLoggedInUser()->post("/admin/articles/{$article->id}/title-images", [
+            'image' => UploadedFile::fake()->image('testpic.jpg')
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertEquals(['image_src' => $article->fresh()->titleImage()], $response->decodeResponseJson());
+    }
+
+    /**
+     *@test
+     */
     public function an_image_is_required_to_set_the_title_image()
     {
         $article = $this->createArticle();

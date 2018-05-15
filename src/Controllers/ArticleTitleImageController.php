@@ -17,7 +17,9 @@ class ArticleTitleImageController extends Controller
     public function store($article)
     {
         request()->validate(['image' => 'required|image']);
-        Article::findOrFail($article)->setTitleImage(request('image'));
+        $image = Article::findOrFail($article)->setTitleImage(request('image'));
+
+        return ['image_src' => $image->getUrl()];
     }
 
     public function delete($article)
