@@ -70,6 +70,23 @@ class PublishingArticlesTest extends TestCase
     /**
      *@test
      */
+    public function publishing_an_article_responds_with_the_fresh_article_data()
+    {
+        $this->disableExceptionHandling();
+        $article = $this->createArticle(['is_draft' => true, 'published_on' => null]);
+
+        $response = $this->asLoggedInUser()->json('POST', "/admin/published-articles", [
+            'article_id' => $article->id,
+            'publish_date' => Carbon::parse('+5 days')->format('Y-m-d\Th:i:s') . '.000Z'
+        ]);
+        $response->assertStatus(200);
+
+        $this->assertEquals($article->fresh()->toJsonableArray(), $response->decodeResponseJson());
+    }
+
+    /**
+     *@test
+     */
     public function a_valid_date_string_is_required_if_publishing_for_a_specific_date()
     {
         $article = $this->createArticle(['is_draft' => true, 'published_on' => null]);

@@ -21,7 +21,10 @@ class PublishedArticlesController extends Controller
             'article_id' => 'required|exists:articles,id',
             'publish_date' => 'date'
         ]);
-        Article::find(request('article_id'))->publish(request('publish_date', null));
+        $article = Article::find(request('article_id'));
+        $article->publish(request('publish_date', null));
+
+        return $article->fresh()->toJsonableArray();
     }
 
     public function delete($article)
