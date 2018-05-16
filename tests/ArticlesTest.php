@@ -207,7 +207,7 @@ class ArticlesTest extends TestCase
     /**
      * @test
      */
-    public function a_published_article_with_a_future__published_on_date_has_published_state()
+    public function a_published_article_with_a_future_published_on_date_has_published_state()
     {
         $article = $this->createArticle(['is_draft' => false, 'published_on' => Carbon::parse('+3 days')]);
 
