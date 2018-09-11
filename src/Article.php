@@ -7,12 +7,14 @@ namespace Dymantic\Articles;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
+use Spatie\MediaLibrary\Models\Media;
 
-class Article extends Model implements HasMediaConversions
+class Article extends Model implements HasMedia
 {
-    use HasMediaTrait, ConvertsImages, Publishable, Sluggable;
+    use HasMediaTrait, Publishable, Sluggable;
 
     const ARTICLE_IMAGES_COLLECTION = 'article_images';
     const TITLE_IMAGE_COLLECTION = 'title_images';
@@ -121,5 +123,31 @@ class Article extends Model implements HasMediaConversions
         return [
             'slug' => ['source' => 'title']
         ];
+    }
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb')
+             ->fit(Manipulations::FIT_CROP, 400, 300)
+             ->keepOriginalImageFormat()
+             ->optimize();
+
+        $this->addMediaConversion('web')
+             ->fit(Manipulations::FIT_MAX, 800, 500)
+             ->keepOriginalImageFormat()
+             ->performOnCollections(static::ARTICLE_IMAGES_COLLECTION)
+             ->optimize();
+
+        $this->addMediaConversion('large_tile')
+             ->fit(Manipulations::FIT_CROP, 800, 400)
+             ->keepOriginalImageFormat()
+             ->performOnCollections(static::TITLE_IMAGE_COLLECTION)
+             ->optimize();
+
+        $this->addMediaConversion('banner')
+             ->fit(Manipulations::FIT_CROP, 1200, 400)
+             ->keepOriginalImageFormat()
+             ->performOnCollections(static::TITLE_IMAGE_COLLECTION)
+             ->optimize();
     }
 }
