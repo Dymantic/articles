@@ -20,7 +20,7 @@ class ArticleTitleImageTest extends TestCase
 
         $article->setTitleImage(UploadedFile::fake()->image('testpic.jpg'));
 
-        $this->assertContains('testpic.jpg', $article->getTitleImage()->getUrl());
+        $this->assertStringContainsString('testpic.jpg', $article->getTitleImage()->getUrl());
     }
 
     /**
@@ -35,7 +35,7 @@ class ArticleTitleImageTest extends TestCase
         $this->assertFalse(file_exists($first->getPath()));
         $this->assertTrue(file_exists($second->getPath()));
 
-        $this->assertContains('second_testpic', $article->fresh()->getTitleImage()->getPath());
+        $this->assertStringContainsString('second_testpic', $article->fresh()->getTitleImage()->getPath());
         $this->assertCount(1, $article->getMedia(Article::TITLE_IMAGE_COLLECTION));
     }
 
