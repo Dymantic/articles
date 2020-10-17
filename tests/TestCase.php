@@ -9,12 +9,12 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Exceptions\Handler;
 use Orchestra\Testbench\TestCase as Orchestra;
-use \Spatie\MediaLibrary\MediaLibraryServiceProvider;
+use \banner\MediaLibrary\MediaLibraryServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -31,14 +31,17 @@ abstract class TestCase extends Orchestra
     protected function disableExceptionHandling()
     {
         $this->app->instance(ExceptionHandler::class, new class extends Handler {
-            public function __construct() {}
+            public function __construct()
+            {
+            }
 
             public function report(\Throwable $e)
             {
                 // no-op
             }
 
-            public function render($request, \Throwable $e) {
+            public function render($request, \Throwable $e)
+            {
                 throw $e;
             }
 
@@ -74,31 +77,32 @@ abstract class TestCase extends Orchestra
         $app['config']->set('filesystems.disks.media', [
             'driver' => 'local',
             'root'   => __DIR__ . '/temp/media',
+            'url'    => '/media',
         ]);
 
-        $app['config']->set('medialibrary', [
-            'disk_name'          => 'media',
-            'max_file_size'               => 1024 * 1024 * 10,
-            'queue_name'                  => '',
-            'media_model'                 => \Spatie\MediaLibrary\Models\Media::class,
-            'image_driver'                => 'gd',
-            'custom_url_generator_class'  => null,
-            'custom_path_generator_class' => null,
-            's3'                          => [
-                'domain' => 'https://xxxxxxx.s3.amazonaws.com',
+        $app['config']->set('media-library', [
+            'disk_name'                => 'media',
+            'max_file_size'            => 1024 * 1024 * 10,
+            'queue_name'               => '',
+            'media_model'              => \Spatie\MediaLibrary\MediaCollections\Models\Media::class,
+            'image_driver'             => 'gd',
+            'url_generator'            => \Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
+            'path_generator'           => \Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+            'conversion_file_namer' => \Spatie\MediaLibrary\Conversions\DefaultConversionFileNamer::class,
+            's3'                       => [
             ],
-            'remote'                      => [
+            'remote'                   => [
                 'extra_headers' => [
                     'CacheControl' => 'max-age=604800',
                 ],
             ],
-            'image_generators'            => [
-                \Spatie\MediaLibrary\ImageGenerators\FileTypes\Image::class,
-                \Spatie\MediaLibrary\ImageGenerators\FileTypes\Pdf::class,
-                \Spatie\MediaLibrary\ImageGenerators\FileTypes\Svg::class,
-                \Spatie\MediaLibrary\ImageGenerators\FileTypes\Video::class,
+            'image_generators'         => [
+                \Spatie\MediaLibrary\Conversions\ImageGenerators\Image::class,
+                \Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf::class,
+                \Spatie\MediaLibrary\Conversions\ImageGenerators\Svg::class,
+                \Spatie\MediaLibrary\Conversions\ImageGenerators\Video::class,
             ],
-            'image_optimizers'            => [
+            'image_optimizers'         => [
                 \Spatie\ImageOptimizer\Optimizers\Jpegoptim::class => [
                     '--strip-all',  // this strips out all text information such as comments and EXIF data
                     '--all-progressive',  // this will make sure the resulting image is a progressive one
@@ -119,9 +123,9 @@ abstract class TestCase extends Orchestra
                     '-O3', // this produces the slowest but best results
                 ],
             ],
-            'temporary_directory_path'    => null,
-            'ffmpeg_binaries'             => '/usr/bin/ffmpeg',
-            'ffprobe_binaries'            => '/usr/bin/ffprobe',
+            'temporary_directory_path' => null,
+            'ffmpeg_binaries'          => '/usr/bin/ffmpeg',
+            'ffprobe_binaries'         => '/usr/bin/ffprobe',
         ]);
 
         $app->bind('path.public', function () {
@@ -149,12 +153,14 @@ abstract class TestCase extends Orchestra
 
         $app['db']->connection()->getSchemaBuilder()->create('media', function (Blueprint $table) {
             $table->increments('id');
+            $table->uuid('uuid')->nullable();
             $table->morphs('model');
             $table->string('collection_name');
             $table->string('name');
             $table->string('file_name');
             $table->string('mime_type')->nullable();
             $table->string('disk');
+            $table->string('conversions_disk')->nullable();
             $table->unsignedInteger('size');
             $table->json('manipulations');
             $table->json('custom_properties');

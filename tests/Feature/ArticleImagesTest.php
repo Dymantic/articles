@@ -8,6 +8,8 @@ use Dymantic\Articles\Article;
 use Dymantic\Articles\Test\MakesModels;
 use Dymantic\Articles\Test\TestCase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ArticleImagesTest extends TestCase
 {
@@ -18,6 +20,7 @@ class ArticleImagesTest extends TestCase
      */
     public function an_image_can_be_posted_to_an_article()
     {
+        Storage::fake('media');
         $this->disableExceptionHandling();
         $article = $this->createArticle();
 
@@ -32,7 +35,7 @@ class ArticleImagesTest extends TestCase
         $this->assertArrayHasKey('url', $response->decodeResponseJson());
         $this->assertArrayHasKey('href', $response->decodeResponseJson());
 
-        $this->assertTrue(file_exists(__DIR__ . '/../temp' .$response->decodeResponseJson()['location']));
+        Storage::disk('media')->assertExists(Str::after($response->decodeResponseJson('location'), "storage"));
     }
 
     /**
