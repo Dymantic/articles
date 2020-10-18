@@ -11,7 +11,7 @@
     ],
     "require": {
         "spatie/laravel-medialibrary": "^8.0",
-        "cviebrock/eloquent-sluggable": "^7.0"
+        "cviebrock/eloquent-sluggable": "^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0",
