@@ -25,7 +25,7 @@ class ArticleListServicesTest extends TestCase
         $response = $this->asLoggedInUser()->json('GET', "/admin/services/articles");
         $response->assertStatus(200);
 
-        $fetched_articles = $response->decodeResponseJson();
+        $fetched_articles = $response->json();
 
         $this->assertCount(15, $fetched_articles['articles']);
         $this->assertCount(3, $fetched_articles['page_links']);
@@ -52,11 +52,11 @@ class ArticleListServicesTest extends TestCase
         $responseC = $this->asLoggedInUser()->json('GET', "/admin/services/articles?page=3");
         $responseC->assertStatus(200);
 
-        $page1 = $responseA->decodeResponseJson();
+        $page1 = $responseA->json();
         $page1_ids = collect($page1['articles'])->pluck('id');
-        $page2 = $responseB->decodeResponseJson();
+        $page2 = $responseB->json();
         $page2_ids = collect($page2['articles'])->pluck('id');
-        $page3 = $responseC->decodeResponseJson();
+        $page3 = $responseC->json();
         $page3_ids = collect($page3['articles'])->pluck('id');
 
         $this->assertCount(0, $page1_ids->intersect($page2_ids));

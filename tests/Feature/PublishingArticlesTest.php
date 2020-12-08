@@ -42,7 +42,7 @@ class PublishingArticlesTest extends TestCase
         ]);
         $response->assertStatus(422);
 
-        $this->assertArrayHasKey('article_id', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('article_id', $response->json()['errors']);
     }
 
     /**
@@ -81,7 +81,7 @@ class PublishingArticlesTest extends TestCase
         ]);
         $response->assertStatus(200);
 
-        $this->assertEquals($article->fresh()->toJsonableArray(), $response->decodeResponseJson());
+        $this->assertEquals($article->fresh()->toJsonableArray(), $response->json());
     }
 
     /**
@@ -97,7 +97,7 @@ class PublishingArticlesTest extends TestCase
         ]);
         $response->assertStatus(422);
 
-        $this->assertArrayHasKey('publish_date', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('publish_date', $response->json()['errors']);
     }
 
     /**

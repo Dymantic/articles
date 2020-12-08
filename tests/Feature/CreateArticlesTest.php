@@ -61,7 +61,7 @@ class CreateArticlesTest extends TestCase
         $response = $this->asLoggedInUser()->json('POST', '/admin/articles', $article_data);
 
         $response->assertStatus(422);
-        $this->assertArrayHasKey('title', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('title', $response->json()['errors']);
 
         $this->assertDatabaseMissing('articles', $article_data);
     }
@@ -82,6 +82,6 @@ class CreateArticlesTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertCount(1, Article::all());
-        $this->assertEquals(Article::first()->toJsonableArray(), $response->decodeResponseJson());
+        $this->assertEquals(Article::first()->toJsonableArray(), $response->json());
     }
 }

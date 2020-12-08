@@ -41,7 +41,7 @@ class UploadTitleImagesTest extends TestCase
         ]);
         $response->assertStatus(200);
 
-        $this->assertEquals(['image_src' => $article->fresh()->titleImage()], $response->decodeResponseJson());
+        $this->assertEquals(['image_src' => $article->fresh()->titleImage()], $response->json());
     }
 
     /**
@@ -55,7 +55,7 @@ class UploadTitleImagesTest extends TestCase
             'image' => ''
         ]);
         $response->assertStatus(422);
-        $this->assertArrayHasKey('image', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('image', $response->json()['errors']);
 
         $this->assertFalse($article->fresh()->hasTitleImage());
     }
@@ -71,7 +71,7 @@ class UploadTitleImagesTest extends TestCase
             'image' => 'NOT-AN-IMAGE'
         ]);
         $response->assertStatus(422);
-        $this->assertArrayHasKey('image', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('image', $response->json()['errors']);
 
         $this->assertFalse($article->fresh()->hasTitleImage());
     }

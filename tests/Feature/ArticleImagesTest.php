@@ -31,11 +31,11 @@ class ArticleImagesTest extends TestCase
 
         $this->assertTrue($article->fresh()->hasMedia(Article::ARTICLE_IMAGES_COLLECTION));
 
-        $this->assertArrayHasKey('location', $response->decodeResponseJson());
-        $this->assertArrayHasKey('url', $response->decodeResponseJson());
-        $this->assertArrayHasKey('href', $response->decodeResponseJson());
+        $this->assertArrayHasKey('location', $response->json());
+        $this->assertArrayHasKey('url', $response->json());
+        $this->assertArrayHasKey('href', $response->json());
 
-        Storage::disk('media')->assertExists(Str::after($response->decodeResponseJson('location'), "storage"));
+        Storage::disk('media')->assertExists(Str::after($response->json('location'), "storage"));
     }
 
     /**
@@ -50,7 +50,7 @@ class ArticleImagesTest extends TestCase
         ]);
         $response->assertStatus(422);
 
-        $this->assertArrayHasKey('image', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('image', $response->json()['errors']);
     }
 
     /**
@@ -65,6 +65,6 @@ class ArticleImagesTest extends TestCase
         ]);
         $response->assertStatus(422);
 
-        $this->assertArrayHasKey('image', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('image', $response->json()['errors']);
     }
 }

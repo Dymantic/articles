@@ -53,7 +53,7 @@ class UpdateArticlesTest extends TestCase
 
         $response = $this->asLoggedInUser()->json('POST', "/admin/articles/{$article->id}", $new_attributes);
         $response->assertStatus(422);
-        $this->assertArrayHasKey('title', $response->decodeResponseJson()['errors']);
+        $this->assertArrayHasKey('title', $response->json()['errors']);
 
         $this->assertDatabaseHas('articles', array_merge(['id' => $article->id], $old_attributes));
     }
@@ -78,7 +78,7 @@ class UpdateArticlesTest extends TestCase
         $response = $this->asLoggedInUser()->json('POST', "/admin/articles/{$article->id}", $new_attributes);
         $response->assertStatus(200);
 
-        $this->assertEquals($article->fresh()->toJsonableArray(), $response->decodeResponseJson());
+        $this->assertEquals($article->fresh()->toJsonableArray(), $response->json());
     }
 
     /**
@@ -109,6 +109,6 @@ class UpdateArticlesTest extends TestCase
             'body' => 'NEW BODY'
         ]);
         $response->assertStatus(200);
-        $this->assertEquals(['body' => 'NEW BODY'], $response->decodeResponseJson());
+        $this->assertEquals(['body' => 'NEW BODY'], $response->json());
     }
 }
